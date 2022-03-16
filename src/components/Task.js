@@ -8,9 +8,9 @@ const Task = ({ task, onDelete, onToggle, completeTask, failTask }) => {
         <div className={`task ${task.reminder ? 'reminder' : ''}`} onDoubleClick={() => onToggle(task.id)}>
             <h3>{task.text} <FaCheck
                 style={{ color: 'green', cursor: 'pointer' }}
-                onClick={() => completeTask()} />
+                onClick={() => completeTask(task.id)} />
             </h3>
-            <h5> {task.time} minute <Timer time={time} failTask={failTask} /></h5>
+            <h5> {task.time} minute <Timer task={task} time={time} failTask={failTask} /></h5>
 
         </div>
     )

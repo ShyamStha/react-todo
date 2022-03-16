@@ -1,22 +1,20 @@
 import Header from './components/Header'
 import Tasks from './components/Tasks'
-import React from 'react'
 import { useState, useEffect } from "react"
 import AddTask from './components/AddTask'
 import Footer from './components/Footer'
 import About from './components/About'
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import CompletedTask from './components/CompletedTask'
 import FailedTask from './components/FailedTask'
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Link } from 'react-router-dom'
 
-export const TodoContext = React.CreateContext < any > ({});
-
-
-export const TodoContextProvider = ({ children }) => {
+function App() {
   const [showAddTask, setShowAddTask] = useState(false)
   const [tasks, setTasks] = useState([])
   const [completedList, setCompletedList] = useState([])
   const [failedList, setFailedList] = useState([])
+
 
   useEffect(() => {
     const getTasks = async () => {
@@ -64,34 +62,38 @@ export const TodoContextProvider = ({ children }) => {
 
 
   }
+
   const handledelete = async (id) => {
     await fetch(`http://localhost:3001/tasks/${id}`, {
       method: 'DELETE',
     })
 
-    setTasks(tasks.filter((task) => task.id !== id))
+    setCompletedList(tasks.filter((task) => task.id !== id))
   }
 
-  const completeTask = (taskNameToDelete) => {
-    setTasks(tasks.filter((task) => {
-      return task = taskNameToDelete
+  const completeTask = async (id) => {
+    await fetch(`http://localhost:3001/tasks/${id}`, {
+      method: 'DELETE',
     })
-    )
+
+    setTasks(tasks.filter((task) => task.id !== id))
+
     setCompletedList([...completedList, ...tasks.filter((task) => {
-      return task == taskNameToDelete;
+      return task.id === id;
     })])
 
   }
 
 
-  const failTask = (taskNameToDelete) => {
-    setTasks(tasks.filter((task) => {
-      return task.text = taskNameToDelete;
+  const failTask = async (id) => {
+    await fetch(`http://localhost:3001/tasks/${id}`, {
+      method: 'DELETE',
     })
-    );
+
+    setTasks(tasks.filter((task) => task.id !== id))
 
     setFailedList([...failedList, ...tasks.filter((task) => {
-      return task.text === taskNameToDelete;
+      return task.id === id;
     })])
   };
 
@@ -119,57 +121,34 @@ export const TodoContextProvider = ({ children }) => {
   }
 
   return (
-    <TodoContext.Provider
-      value={{
-        showAddTask,
-        tasks,
-        completedList,
-        failedList,
-        fetchTasks,
-        fetchTask,
-        addTask,
-        handledelete,
-        completeTask,
-        failTask,
-        toggleReminder
-      }}
-    >
-      {children}
-    </TodoContext.Provider>
-  );
-};
+    <Router>
+      <div className="container">
+        <Header onAdd={() => setShowAddTask(!showAddTask)} showAdd={showAddTask} />
 
-function App() {
+        <Routes>
+          <Route path='/' exact element={
+            <>
+              {showAddTask && <AddTask onAdd={addTask} />}
+              {tasks.length > 0 ? (
+                <Tasks tasks={tasks} onDelete={handledelete} onToggle={toggleReminder} failTask={failTask} completeTask={completeTask} />
+              ) : (
+                'No Tasks To Show'
+              )}
 
-
-
-
-  return (
-    <TodoContextProvider>
-      <Router>
-        <div className="container">
-          <Header onAdd={() => setShowAddTask(!showAddTask)} showAdd={showAddTask} />
-
-          <Routes>
-            <Route path='/' exact element={
-              <>
-                {showAddTask && <AddTask onAdd={addTask} />}
-                {tasks.length > 0 ? (
-                  <Tasks tasks={tasks} onDelete={handledelete} onToggle={toggleReminder} failTask={failTask} completeTask={completeTask} />
-                ) : (
-                  'No Tasks To Show'
-                )}
-
-              </>
-            } />
-            <Route path='/completedtask' element={<CompletedTask />} />
-            <Route path='/failedtask' element={<FailedTask />} />
-            <Route path='/about' element={<About />} />
-          </Routes>
-          < Footer />
+            </>
+          } />
+          <Route path='/completedtask' element={<CompletedTask completedList={completedList} handledelete={handledelete} />} />
+          <Route path='/failedtask' element={<FailedTask failedList={failedList} />} />
+          <Route path='/about' element={<About />} />
+        </Routes>
+        <div>
+          <h3><Link to="/completedtask">Task Completed</Link></h3>
+          <span></span>
+          <h3><Link to="/failedtask">Task Failed</Link></h3>
         </div>
-      </Router>
-    </TodoContextProvider>
+        < Footer />
+      </div>
+    </Router>
   );
 }
 

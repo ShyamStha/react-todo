@@ -9,10 +9,12 @@ const Timer = ({ task, time, failTask }) => {
     useEffect(() => {
         console.log(minutes, seconds);
         setTimeout(() => {
-            if (minutes == 0 && seconds <= 1) {
+            if (minutes == 0 && seconds == 0) {
                 setMinutes(0)
                 setSeconds(0)
-                failTask(task)
+                console.log("hello")
+                console.log(task.id)
+                failTask(task.id)
             } else if (minutes > 0 && seconds == 0) {
                 setMinutes(prevMinutes => prevMinutes - 1)
                 setSeconds(59)
