@@ -1,11 +1,11 @@
 import { FaCheck } from 'react-icons/fa'
 import Timer from './Timer';
 
-const Task = ({ task, onDelete, onToggle, completeTask, failTask }) => {
+const Task = ({ task, handledelete, toggleReminder, completeTask, failTask }) => {
     let time = task.time
     console.log(time)
     return (
-        <div className={`task ${task.reminder ? 'reminder' : ''}`} onDoubleClick={() => onToggle(task.id)}>
+        <div className={`task ${task.reminder ? 'reminder' : ''}`} onDoubleClick={() => toggleReminder(task.id)}>
             <h3>{task.text} <FaCheck
                 style={{ color: 'green', cursor: 'pointer' }}
                 onClick={() => completeTask(task.id)} />

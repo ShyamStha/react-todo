@@ -1,7 +1,11 @@
 import { Link } from "react-router-dom"
 import { FaRedoAlt } from "react-icons/fa";
+import { useContext } from "react";
+import { TodoContext } from "../Context";
 
-const FailedTask = ({ failedList }) => {
+const FailedTask = () => {
+
+    const { task, failedList, onAdd, handledelete } = useContext(TodoContext)
 
     return (
         <>

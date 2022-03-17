@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import './timer.css'
 
 const Timer = ({ task, time, failTask }) => {
-    const [seconds, setSeconds] = useState(60)
+    const [seconds, setSeconds] = useState(6)
     const [minutes, setMinutes] = useState(time - 1)
 
     /* any useeffect gets called one time in intial render */

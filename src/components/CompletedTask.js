@@ -1,8 +1,11 @@
 import { Link } from "react-router-dom"
-import { useState } from "react"
+import { useContext, useState } from "react"
 import { FaTimes } from "react-icons/fa";
+import { TodoContext } from "../Context";
 
-const CompletedTask = ({ completedList, handledelete }) => {
+const CompletedTask = () => {
+
+    const { completedList, handledelete } = useContext(TodoContext)
 
 
     return (
